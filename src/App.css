@@ -1,0 +1,101 @@
+/* help menu */
+.tie-btn-delete {
+  display: none !important;
+}
+
+.tie-btn-deleteAll {
+  display: none !important;
+}
+
+.tui-image-editor-help-menu {
+  height: auto !important;
+  right: 20px !important;
+}
+
+.tui-image-editor-help-menu li:nth-child(9) {
+  display: none !important;
+}
+
+/* 調色盤 */
+.color-picker-control {
+  left: -74px !important;
+  width: 220px !important;
+}
+
+.tui-colorpicker-clearfix {
+  width: 100% !important;
+}
+
+.tui-colorpicker-palette-hex {
+  font-size: 12px !important;
+  margin-top: 0 !important;
+}
+
+.tui-colorpicker-palette-button {
+  height: 16px;
+  width: 16px;
+}
+
+.tui-colorpicker-color-transparent {
+  background-image: url("./images/transparent.png");
+}
+
+.tui-colorpicker-palette-preview {
+  font-size: 0;
+  width: 19px !important;
+  height: 19px !important;
+}
+
+.tui-image-editor-header {
+  display: none;
+}
+
+.tui-image-editor-selectlist {
+  height: 200px;
+  overflow: auto;
+}
+
+/* custom */
+.page-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.page-selector {
+  overflow-y: auto;
+  height: 100vh;
+  /* width: 100%; */
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* loading */
+.spinner {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
