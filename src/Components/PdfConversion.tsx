@@ -29,7 +29,7 @@ export const ImgToPdf = async (
   imageDataArray: string[],
   pdfBlob: Blob
 ): Promise<Blob> => {
-  const pdfDoc = await PDFDocument.load(await pdfBlob.arrayBuffer());
+  const pdfDoc = await PDFDocument.load(await pdfBlob.arrayBuffer(), { ignoreEncryption: true });
   const pages = pdfDoc.getPages();
 
   const page = pages[0];

@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { PdfToImg } from "../Components/PdfConversion";
-import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
+import { useState, useEffect } from 'react';
+import { PdfToImg } from '../Components/PdfConversion';
+import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 
-GlobalWorkerOptions.workerSrc = "/pdfjs/pdf.worker.mjs";
+GlobalWorkerOptions.workerSrc = '/pdfjs/pdf.worker.mjs';
 
 // 將 Blob 文件讀取為 ArrayBuffer
 const readFileAsArrayBuffer = (blob: Blob) => {
@@ -30,6 +30,7 @@ export const useFetchFile = (
   setFileType: (type: string) => void,
   setPdfData: (data: Blob) => void,
   setImageData: (data: string[]) => void,
+  setFilename: (filename: string) => void,
   setErrorMessage: (message: string) => void
 ) => {
   const [fetchLoading, setFetchLoading] = useState(false);
@@ -41,7 +42,7 @@ export const useFetchFile = (
       // 處裡 PDF 文件
       const handlePdf = async (pdfBlob: Blob) => {
         try {
-          setFileType("pdf");
+          setFileType('pdf');
           const pdfBytes = (await readFileAsArrayBuffer(
             pdfBlob
           )) as ArrayBuffer;
@@ -59,8 +60,8 @@ export const useFetchFile = (
           );
           setImageData(images);
         } catch (error) {
-          setErrorMessage("Error processing PDF file.");
-          console.error("Error processing PDF:", error);
+          setErrorMessage('Error processing PDF file.');
+          console.error('Error processing PDF:', error);
         }
       };
 
@@ -71,16 +72,16 @@ export const useFetchFile = (
           const imgDataUrl = await readFileAsDataURL(imgBlob);
           setImageData([imgDataUrl]);
         } catch (error) {
-          setErrorMessage("Error processing image file.");
-          console.error("Error processing image:", error);
+          setErrorMessage('Error processing image file.');
+          console.error('Error processing image:', error);
         }
       };
 
       // fileUrl=http%3A%2F%2F192.168.88.70%3A5000%2Fuploads%2Ftest1.pdf&apiEndpoint=http%3A%2F%2F192.168.88.70%3A5000%2Fupdate
       // 從 URL 獲取文件連結
       const urlParams = new URLSearchParams(window.location.search);
-      const basefileUrl = urlParams.get("fileUrl") || "";
-      const apiEndpoint = urlParams.get("apiEndpoint");
+      const basefileUrl = urlParams.get('fileUrl') || '';
+      const apiEndpoint = urlParams.get('apiEndpoint');
       const isURL = basefileUrl && apiEndpoint;
       if (!isURL && !file) {
         setFetchLoading(false);
@@ -89,8 +90,9 @@ export const useFetchFile = (
       setFileUrl(basefileUrl);
 
       try {
-        let contentType = "";
+        let contentType = '';
         let fileBlob: Blob;
+        let filename = '';
 
         if (file) {
           fileBlob = file;
@@ -101,25 +103,28 @@ export const useFetchFile = (
           if (!response.ok) {
             throw new Error(`Failed to fetch file: ${response.statusText}`);
           }
-          contentType = response.headers.get("Content-Type") || "";
+          contentType = response.headers.get('Content-Type') || '';
           fileBlob = await response.blob();
+          filename = decodedFileUrl.split('/').pop() || 'unknown';
         }
 
+        setFilename(filename);
+
         switch (contentType) {
-          case "application/pdf":
+          case 'application/pdf':
             await handlePdf(fileBlob);
             break;
-          case "image/jpeg":
-            await handleImage(fileBlob, "jpg");
+          case 'image/jpeg':
+            await handleImage(fileBlob, 'jpg');
             break;
-          case "image/png":
-            await handleImage(fileBlob, "png");
+          case 'image/png':
+            await handleImage(fileBlob, 'png');
             break;
           default:
-            throw new Error("Unsupported file type.");
+            throw new Error('Unsupported file type.');
         }
       } catch (error) {
-        console.error("Error fetching file:", error);
+        console.error('Error fetching file:', error);
         setErrorMessage((error as Error).message);
       } finally {
         setFetchLoading(false);
@@ -133,6 +138,7 @@ export const useFetchFile = (
     setFileType,
     setPdfData,
     setImageData,
+    setFilename,
     setErrorMessage,
   ]);
 

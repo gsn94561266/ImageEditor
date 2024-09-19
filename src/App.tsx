@@ -1,29 +1,30 @@
-import { useState, useCallback, ChangeEvent } from "react";
+import { useState, useCallback, ChangeEvent } from 'react';
 import {
   useFetchFile,
   useImageEditor,
   useDownloadFile,
   useSaveFile,
-} from "./Hooks";
-import { BiGridAlt } from "react-icons/bi";
-import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
-import ErrorToast from "./Components/ErrorToast";
-import "./App.css";
+} from './Hooks';
+import { BiGridAlt } from 'react-icons/bi';
+import { MdArrowBackIosNew, MdArrowForwardIos } from 'react-icons/md';
+import ErrorToast from './Components/ErrorToast';
+import './App.css';
 
 const App = () => {
   const [imageData, setImageData] = useState<string[]>([]);
   const [instance, setInstance] = useState<any>(null);
-  const [newFilename, setNewFilename] = useState<string>("");
+  const [newFilename, setNewFilename] = useState<string>('');
+  const [filename, setFilename] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
-  const [fileUrl, setFileUrl] = useState<string>("");
-  const [fileType, setFileType] = useState<string>("");
+  const [fileUrl, setFileUrl] = useState<string>('');
+  const [fileType, setFileType] = useState<string>('');
   const [pdfData, setPdfData] = useState<any>(null);
   const [selectedPage, setSelectedPage] = useState<number>(1);
   const [inputPage, setInputPage] = useState<string>(selectedPage.toString());
   const [pageSelection, setPageSelection] = useState<boolean>(false);
   const [isInvalid, setIsInvalid] = useState<boolean>(false);
-  const [isModalOpen, setIsModalOpen] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const fetchLoading = useFetchFile(
     file,
@@ -31,6 +32,7 @@ const App = () => {
     setFileType,
     setPdfData,
     setImageData,
+    setFilename,
     setErrorMessage
   );
 
@@ -55,7 +57,11 @@ const App = () => {
     selectedPage,
     pdfData,
     imageData,
+    filename,
+    newFilename,
     fileType,
+    isModalOpen,
+    setIsModalOpen,
     setErrorMessage
   );
 
@@ -116,11 +122,10 @@ const App = () => {
     const invalidChars = /[\\/:*?"<>|]/;
     return (
       newFilename &&
-      newFilename.trim() !== "" &&
+      newFilename.trim() !== '' &&
       !invalidChars.test(newFilename)
     );
   };
-  console.log(fileUrl);
 
   return (
     <div className="bg-dark vh-100">
@@ -133,12 +138,11 @@ const App = () => {
                   <button
                     className={
                       pageSelection
-                        ? "btn btn-primary btn-sm p-0"
-                        : "btn btn-black btn-sm text-white p-0"
+                        ? 'btn btn-primary btn-sm p-0'
+                        : 'btn btn-black btn-sm text-white p-0'
                     }
                     type="button"
-                    onClick={() => setPageSelection(!pageSelection)}
-                  >
+                    onClick={() => setPageSelection(!pageSelection)}>
                     <BiGridAlt className="fs-4 p-0" />
                   </button>
                 </div>
@@ -147,22 +151,20 @@ const App = () => {
                   <div className="d-flex mx-1 align-items-center">
                     <button
                       className="btn btn-dark text-white p-0 d-flex align-items-center"
-                      onClick={() => handlePageChange(selectedPage - 1)}
-                    >
+                      onClick={() => handlePageChange(selectedPage - 1)}>
                       <MdArrowBackIosNew className="fs-5 p-1" />
                     </button>
                     <form
                       onSubmit={(e) => {
                         e.preventDefault();
                         handlePageChange();
-                      }}
-                    >
+                      }}>
                       <input
                         value={inputPage}
                         className="mx-1 bg-dark text-white border-0 text-center"
                         style={{
-                          width: "2.5rem",
-                          height: "1.4rem",
+                          width: '2.5rem',
+                          height: '1.4rem',
                         }}
                         onChange={(e) => {
                           const value = e.target.value;
@@ -173,8 +175,7 @@ const App = () => {
                     </form>
                     <button
                       className="btn btn-dark text-white p-0 d-flex align-items-center"
-                      onClick={() => handlePageChange(selectedPage + 1)}
-                    >
+                      onClick={() => handlePageChange(selectedPage + 1)}>
                       <MdArrowForwardIos className="fs-5 p-1" />
                     </button>
                   </div>
@@ -199,8 +200,7 @@ const App = () => {
               <button
                 type="button"
                 className="btn btn-info btn-sm mx-2"
-                onClick={handleDownload}
-              >
+                onClick={handleDownload}>
                 {downloadLoading && (
                   <span
                     className="spinner-border spinner-border-sm me-1"
@@ -226,10 +226,8 @@ const App = () => {
                   <button
                     type="button"
                     className="btn btn-primary btn-sm dropdown-toggle"
-                    onClick={() => handleSave}
                     data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
+                    aria-expanded="false">
                     {saveLoading && (
                       <span
                         className="spinner-border spinner-border-sm me-1"
@@ -244,8 +242,7 @@ const App = () => {
                       <button
                         type="button"
                         className="dropdown-item"
-                        onClick={() => setIsModalOpen("save")}
-                      >
+                        onClick={() => setIsModalOpen('save')}>
                         Save
                       </button>
                     </li>
@@ -253,8 +250,7 @@ const App = () => {
                       <button
                         type="button"
                         className="dropdown-item"
-                        onClick={() => setIsModalOpen("saveAs")}
-                      >
+                        onClick={() => setIsModalOpen('saveAs')}>
                         Save As...
                       </button>
                     </li>
@@ -280,15 +276,13 @@ const App = () => {
                   <button
                     type="button"
                     className="border-0 rounded-1 p-0"
-                    onClick={() => handlePageChange(index + 1)}
-                  >
+                    onClick={() => handlePageChange(index + 1)}>
                     <div
                       className={
                         selectedPage === index + 1
-                          ? "border border-primary border-4 rounded-1"
+                          ? 'border border-primary border-4 rounded-1'
                           : undefined
-                      }
-                    >
+                      }>
                       <img
                         key={index}
                         src={data}
@@ -301,10 +295,9 @@ const App = () => {
                     <span
                       className={`${
                         selectedPage === index + 1
-                          ? "bg-primary"
-                          : "bg-secondary"
-                      } px-4 py-1 rounded-1`}
-                    >
+                          ? 'bg-primary'
+                          : 'bg-secondary'
+                      } px-4 py-1 rounded-1`}>
                       {index + 1}
                     </span>
                   </div>
@@ -319,7 +312,7 @@ const App = () => {
         </div>
       </main>
 
-      {isModalOpen === "save" && (
+      {isModalOpen === 'save' && (
         <div className="modal fade show d-block bg-black bg-opacity-50">
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
@@ -328,7 +321,7 @@ const App = () => {
                 <button
                   type="button"
                   className="btn-close fs-7"
-                  onClick={() => setIsModalOpen("")}
+                  onClick={() => setIsModalOpen('')}
                 />
               </div>
               <div className="modal-body">
@@ -340,15 +333,13 @@ const App = () => {
                 <button
                   type="button"
                   className="btn btn-secondary"
-                  onClick={() => setIsModalOpen("")}
-                >
+                  onClick={() => setIsModalOpen('')}>
                   Close
                 </button>
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={() => handleSave}
-                >
+                  onClick={handleSave}>
                   {saveLoading && (
                     <span
                       className="spinner-border spinner-border-sm me-1"
@@ -363,7 +354,7 @@ const App = () => {
         </div>
       )}
 
-      {isModalOpen === "saveAs" && (
+      {isModalOpen === 'saveAs' && (
         <div className="modal fade show d-block bg-black bg-opacity-50">
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
@@ -374,17 +365,14 @@ const App = () => {
                     setIsInvalid(true);
                     return;
                   }
-                  if (typeof handleSave === "function") {
-                    handleSave(); // 确保 handleSave 是一个函数
-                  }
-                }}
-              >
+                  handleSave();
+                }}>
                 <div className="modal-header py-2">
                   <h1 className="modal-title fs-5">Save As</h1>
                   <button
                     type="button"
                     className="btn-close fs-7"
-                    onClick={() => setIsModalOpen("")}
+                    onClick={() => setIsModalOpen('')}
                   />
                 </div>
                 <div className="modal-body">
@@ -411,8 +399,7 @@ const App = () => {
                   <button
                     type="button"
                     className="btn btn-secondary"
-                    onClick={() => setIsModalOpen("")}
-                  >
+                    onClick={() => setIsModalOpen('')}>
                     Close
                   </button>
                   <button type="submit" className="btn btn-primary">
@@ -432,7 +419,7 @@ const App = () => {
         </div>
       )}
 
-      <ErrorToast message={errorMessage} onClose={() => setErrorMessage("")} />
+      <ErrorToast message={errorMessage} onClose={() => setErrorMessage('')} />
     </div>
   );
 };
