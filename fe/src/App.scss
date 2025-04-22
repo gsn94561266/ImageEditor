@@ -16,6 +16,11 @@
   display: none !important;
 }
 
+// 容器
+.tui-image-editor-container .tui-image-editor{
+  left: 0 !important;
+}
+
 /* 調色盤 */
 .color-picker-control {
   left: -74px !important;
@@ -37,7 +42,7 @@
 }
 
 .tui-colorpicker-color-transparent {
-  background-image: url("./images/transparent.png");
+  background-image: url("./assets/transparent.png");
 }
 
 .tui-colorpicker-palette-preview {
